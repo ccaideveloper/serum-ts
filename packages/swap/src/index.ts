@@ -810,5 +810,10 @@ const Side = {
   Ask: { ask: {} },
 };
 
-type ExchangeRate = { rate: BN; decimals: number };
+type ExchangeRate = {
+  rate: BN;
+  fromDecimals: number;
+  quoteDecimals: number;
+  strict: boolean;
+};
 type SendTxRequest = { tx: Transaction; signers: Array<Account | undefined> };
