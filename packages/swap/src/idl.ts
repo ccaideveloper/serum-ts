@@ -448,5 +448,10 @@ export const IDL: Idl = {
       name: 'SlippageExceeded',
       msg: 'Slippage tolerance exceeded',
     },
+    {
+      code: 102,
+      name: 'ZeroSwap',
+      msg: 'No tokens received when swapping',
+    },
   ],
 };
