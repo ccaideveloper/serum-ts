@@ -38,10 +38,9 @@ const OPEN_ENABLED = false;
  *
  * # Swap
  *
- * A module to swap tokens across USD(x) quoted markets on the Serum DEX,
- * providing a thin wrapper around an
- * [Anchor](https://github.com/project-serum/anchor) for the sole purpose of
- * providing a simplified `swap` API.
+ * A module to swap tokens across markets the Serum DEX, providing a thin
+ * wrapper around an [Anchor](https://github.com/project-serum/anchor) for the
+ * sole purpose of * providing a simplified `swap` API.
  *
  * ## Usage
  *
@@ -51,7 +50,7 @@ const OPEN_ENABLED = false;
  * const client = new Swap(provider, tokenList)
  * ```
  *
- * ### Swap one token for another.
+ * ### Swap one token for another across USD(x) quoted markets.
  *
  * ```javascript
  * await client.swap({
@@ -61,6 +60,17 @@ const OPEN_ENABLED = false;
  *   minExchangeRate,
  * });
  * ```
+ *
+ * ## Default Behavior
+ *
+ * Some parameters in the swap API are optional. For example, the `fromMarket`
+ * and `toMarket`, specifying the markets to swap across. In the event that
+ * markets are ommitted, the client will swap across USD(x) quoted markets.
+ * For more information about default behavior see the `SwapParams`
+ * documentation. For most GUIs, the application likely already knows the
+ * markets to swap accross, since one needs that information to calculate
+ * exchange rates for the UI. So it's recommend to pass in most, if not all, the
+ * optional parameters explicitly, to prevent unnecessary network requests.
  *
  * ## Swap Program Basics
  *
@@ -75,16 +85,11 @@ const OPEN_ENABLED = false;
  *   swaps two tokens across **two** A/x, B/x markets in the same manner as
  *   `swap`.
  *
- * When swapping to/from a USD(x) token, the swap client will use the `swap` API.
- * When swapping to/from a non-USD(x) token, e.g., wBTC for wETH, the swap
- * client will use the `swapTransitive`API with USD(x) quoted markets to bridge
- * the two tokens.
- *
  * For both APIs, if the number of tokens received from the trade is less than
  * the client provided `minExchangeRate`, the transaction aborts.
  *
  * Note that if this client package is insufficient, one can always use the
- *  Anchor generated client directly, exposing an API mapping one-to-one to
+ * Anchor generated client directly, exposing an API mapping one-to-one to
  * these program instructions. See the
  * [`tests/`](https://github.com/project-serum/swap/blob/master/tests/swap.js)
  * for examples of using the Anchor generated swap client.
@@ -731,17 +736,15 @@ export type SwapParams = {
   amount: BN;
 
   /**
-   * The minimum rate used to calculate the number of `toMint` tokens one
+   * The minimum rate used to calculate the number of tokens one
    * should receive for the swap. This is a safety mechanism to prevent one
    * from performing an unexpecteed trade.
-   *
-   * If not given, then defaults to 0.05% off the **estimated** amount.
    */
   minExchangeRate: ExchangeRate;
 
   /**
    * Token account to receive the Serum referral fee. The mint must be in the
-   * quote currency of the trade.
+   * quote currency of the trade (USDC or USDT).
    */
   referral?: PublicKey;
 
@@ -767,14 +770,16 @@ export type SwapParams = {
   /**
    * Market client for the first leg of the swap. Can be given to prevent
    * the client from making unnecessary network requests. It's recommended
-   * to use this in most cases.
+   * to use this in most cases. If not given, then swaps across a USD(x) quoted
+	 * market.
    */
   fromMarket?: Market;
 
   /**
    * Market client for the second leg of the swap. Can be given to prevent
    * the client from making unnecessary network requests. It's recommended
-   * to use this in most cases.
+   * to use this in most cases. If not given, then swaps across a USD(x) quoted
+	 * market.
    */
   toMarket?: Market;
 
@@ -799,6 +804,7 @@ export type SwapParams = {
 
   /**
    * True if all new open orders accounts should be automatically closed.
+	 * Currently disabled.
    */
   close?: boolean;
 };
