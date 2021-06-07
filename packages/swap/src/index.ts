@@ -39,8 +39,8 @@ const OPEN_ENABLED = false;
  * # Swap
  *
  * A module to swap tokens across markets the Serum DEX, providing a thin
- * wrapper around an [Anchor](https://github.com/project-serum/anchor) for the
- * sole purpose of * providing a simplified `swap` API.
+ * wrapper around an [Anchor](https://github.com/project-serum/anchor) client
+ * for the purpose of providing a simplified `swap` API.
  *
  * ## Usage
  *
@@ -61,15 +61,15 @@ const OPEN_ENABLED = false;
  * });
  * ```
  *
- * ## Default Behavior
+ * ### Default Behavior
  *
  * Some parameters in the swap API are optional. For example, the `fromMarket`
  * and `toMarket`, specifying the markets to swap across. In the event that
  * markets are ommitted, the client will swap across USD(x) quoted markets.
- * For more information about default behavior see the `SwapParams`
+ * For more information about default behavior see the [[SwapParams]]
  * documentation. For most GUIs, the application likely already knows the
  * markets to swap accross, since one needs that information to calculate
- * exchange rates for the UI. So it's recommend to pass in most, if not all, the
+ * exchange rates. So it's recommend to pass in most, if not all, the
  * optional parameters explicitly, to prevent unnecessary network requests.
  *
  * ## Swap Program Basics
